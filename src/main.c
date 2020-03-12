@@ -10,17 +10,17 @@
 #define LED_PIO_IDX_MASK  (1 << LED_PIO_IDX)   // Mascara para CONTROLARMOS o LED
 
 #define LED1_PIO           PIOC                 
-#define LED1_PIO_ID        12                  
+#define LED1_PIO_ID        ID_PIOC                  
 #define LED1_PIO_IDX       19                   
 #define LED1_PIO_IDX_MASK  (1 << LED1_PIO_IDX)  
 
 #define LED2_PIO           PIOD                
-#define LED2_PIO_ID        13                  
+#define LED2_PIO_ID        ID_PIOD                  
 #define LED2_PIO_IDX       26                  
 #define LED2_PIO_IDX_MASK  (1 << LED2_PIO_IDX) 
 
 #define LED3_PIO           PIOD                 
-#define LED3_PIO_ID        13                  
+#define LED3_PIO_ID        ID_PIOD                  
 #define LED3_PIO_IDX       11                   
 #define LED3_PIO_IDX_MASK  (1 << LED3_PIO_IDX)  
 
@@ -31,19 +31,19 @@
 
 
 #define BUT1_PIO				PIOA
-#define BUT1_PIO_ID				10
+#define BUT1_PIO_ID				ID_PIOA
 #define BUT1_PIO_IDX			2
 #define BUT1_PIO_IDX_MASK (1u << BUT1_PIO_IDX)
 
-#define BUT2_PIO				PIOC
-#define BUT2_PIO_ID				12
-#define BUT2_PIO_IDX			13
-#define BUT2_PIO_IDX_MASK (1u << BUT2_PIO_IDX)
-
-#define BUT3_PIO				PIOD
-#define BUT3_PIO_ID				13
-#define BUT3_PIO_IDX			30
+#define BUT3_PIO				PIOC
+#define BUT3_PIO_ID				ID_PIOC
+#define BUT3_PIO_IDX			13
 #define BUT3_PIO_IDX_MASK (1u << BUT3_PIO_IDX)
+
+#define BUT2_PIO				PIOD
+#define BUT2_PIO_ID				ID_PIOD
+#define BUT2_PIO_IDX			30
+#define BUT2_PIO_IDX_MASK (1u << BUT2_PIO_IDX)
 
 
 #define BUZ_PIO				PIOB
@@ -198,24 +198,30 @@ void tone(int freq, int dur){
 	int T = 1000000/(2*freq);
 	int idx = (dur * freq)/1000;
 	for(int i = 0; i <= idx; i++){
-		pio_set(PIOB, BUZ_PIO_IDX_MASK);    
+		pio_set(PIOB, BUZ_PIO_IDX_MASK); 
+		pio_clear(PIOC,LED1_PIO_IDX_MASK);   
 		delay_us(T);                        
-		pio_clear(PIOB, BUZ_PIO_IDX_MASK); 
+		pio_clear(PIOB, BUZ_PIO_IDX_MASK);
+		pio_set(PIOC,LED1_PIO_IDX_MASK); 
 		delay_us(T);
 	}
 }
 // CALLBACK
 void but_callback(void){
 	but_flag = 1;
+	delay_ms(100);
 };
 void but1_callback(void){
 	but1_flag = 1;
+	delay_ms(100);
 	};
 void but2_callback(void){
 	but2_flag = 1;
+	delay_ms(100);
 };
 void but3_callback(void){
 	but3_flag = 1;
+	delay_ms(100);
 };
 
 
@@ -260,16 +266,16 @@ void init(void){
 	pio_handler_set(BUT3_PIO, BUT3_PIO_ID, BUT3_PIO_IDX_MASK, PIO_IT_FALL_EDGE, but3_callback);	
 	
 	NVIC_EnableIRQ(BUT_PIO_ID);
-	NVIC_SetPriority(BUT_PIO_ID, 2);
+	NVIC_SetPriority(BUT_PIO_ID, 4);
 	
 	NVIC_EnableIRQ(BUT1_PIO_ID);
-	NVIC_SetPriority(BUT1_PIO_ID, 2);
+	NVIC_SetPriority(BUT1_PIO_ID, 4);
 	
 	NVIC_EnableIRQ(BUT2_PIO_ID);
-	NVIC_SetPriority(BUT2_PIO_ID, 3);
+	NVIC_SetPriority(BUT2_PIO_ID, 4);
 	
 	NVIC_EnableIRQ(BUT3_PIO_ID);
-	NVIC_SetPriority(BUT3_PIO_ID, 2);
+	NVIC_SetPriority(BUT3_PIO_ID, 4);
 	
 	pio_enable_interrupt(BUT1_PIO, BUT1_PIO_IDX_MASK);
 	pio_enable_interrupt(BUT2_PIO, BUT2_PIO_IDX_MASK);
@@ -279,14 +285,22 @@ void init(void){
 int main(void) {
 	init();
 	int i = 0;
+	pio_set(LED1_PIO, LED1_PIO_IDX_MASK);
+	pio_set(LED2_PIO, LED2_PIO_IDX_MASK);
+	pio_set(LED3_PIO, LED3_PIO_IDX_MASK);
 	while (1) {
 		if(pause){
 			pmc_sleep(SAM_PM_SMODE_SLEEP_WFI);	
 		}
 		
+		if(but1_flag) {
+			pause = 1;
+			but1_flag = 0;	
+		}
+		
 		if(but2_flag) {
-			pause = !pause;
-			but2_flag = 0;	
+			pause = 0;
+			but2_flag = 0;
 		}
 		
 		if(!pause){
@@ -299,19 +313,14 @@ int main(void) {
 			pio_clear(PIOB, BUZ_PIO_IDX_MASK);
 			delay_ms(wait);
 				
-			but1_flag = 0;
 			if(i <sizeof(notes)) i++;
 			else {
 				i = 0;
 				pause = 0;
 			}
-		//}	
 			
 		} 
-// 		else {
-// 			pio_set(PIOB, BUZ_PIO_IDX_MASK);
-// 			
-// 		}
+
 		
 		
 	}
