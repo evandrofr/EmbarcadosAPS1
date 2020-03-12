@@ -5,7 +5,7 @@
     <ProjectVersion>7.0</ProjectVersion>
     <ToolchainName>com.Atmel.ARMGCC.C</ToolchainName>
     <ProjectGuid>dce6c7e3-ee26-4d79-826b-08594b9ad897</ProjectGuid>
-    <avrdevice>ATSAME70Q21</avrdevice>
+    <avrdevice>ATSAME70Q21B</avrdevice>
     <avrdeviceseries>same70</avrdeviceseries>
     <OutputType>Executable</OutputType>
     <Language>C</Language>
@@ -241,7 +241,7 @@
     </AsfFrameworkConfig>
     <avrtool>com.atmel.avrdbg.tool.edbg</avrtool>
     <avrtoolserialnumber>ATML2637010000000000</avrtoolserialnumber>
-    <avrdeviceexpectedsignature>0xA1020E00</avrdeviceexpectedsignature>
+    <avrdeviceexpectedsignature>0xA1020E01</avrdeviceexpectedsignature>
     <avrtoolinterface>SWD</avrtoolinterface>
     <com_atmel_avrdbg_tool_edbg>
       <ToolOptions>
@@ -257,6 +257,19 @@
     <avrtoolinterfaceclock>2000000</avrtoolinterfaceclock>
     <ResetRule>0</ResetRule>
     <EraseKey />
+    <custom>
+      <ToolOptions>
+        <InterfaceProperties>
+          <SwdClock>2000000</SwdClock>
+        </InterfaceProperties>
+        <InterfaceName>
+        </InterfaceName>
+      </ToolOptions>
+      <ToolType>custom</ToolType>
+      <ToolNumber>
+      </ToolNumber>
+      <ToolName>Custom Programming Tool</ToolName>
+    </custom>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
