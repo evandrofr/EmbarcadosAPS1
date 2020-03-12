@@ -294,14 +294,10 @@ int main(void) {
 		}
 		
 		if(but1_flag) {
-			pause = 1;
+			pause = !pause;
 			but1_flag = 0;	
 		}
 		
-		if(but2_flag) {
-			pause = 0;
-			but2_flag = 0;
-		}
 		
 		if(!pause){
 		//for (int i=0;i < sizeof(notes);i++){
