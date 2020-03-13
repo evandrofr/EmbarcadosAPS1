@@ -1,4 +1,5 @@
 #include "asf.h"
+#include "musicas.h"
 
 /************************************************************************/
 /* defines                                                              */
@@ -51,6 +52,8 @@
 #define BUZ_PIO_IDX			2
 #define BUZ_PIO_IDX_MASK (1u << BUZ_PIO_IDX)
 
+#define NMUS                3
+
 void init(void);
 void tone(int freq, int dur);
 void but1_callback(void);
@@ -71,128 +74,6 @@ volatile char but2_flag = 0;
 volatile char but3_flag = 0; 
 char pause = 1;
 //*****************************************
-#define NOTE_C4  262   //Defining note frequency
-#define NOTE_D4  294
-#define NOTE_E4  330
-#define NOTE_F4  349
-#define NOTE_G4  392
-#define NOTE_A4  440
-#define NOTE_B4  494
-#define NOTE_C5  523
-#define NOTE_D5  587
-#define NOTE_E5  659
-#define NOTE_F5  698
-#define NOTE_G5  784
-#define NOTE_A5  880
-#define NOTE_B5  988
-//*****************************************
-int notes[] = {       //Note of the song, 0 is a rest/pulse
-	NOTE_E4, NOTE_G4, NOTE_A4, NOTE_A4, 0,
-	NOTE_A4, NOTE_B4, NOTE_C5, NOTE_C5, 0,
-	NOTE_C5, NOTE_D5, NOTE_B4, NOTE_B4, 0,
-	NOTE_A4, NOTE_G4, NOTE_A4, 0,
-	
-	NOTE_E4, NOTE_G4, NOTE_A4, NOTE_A4, 0,
-	NOTE_A4, NOTE_B4, NOTE_C5, NOTE_C5, 0,
-	NOTE_C5, NOTE_D5, NOTE_B4, NOTE_B4, 0,
-	NOTE_A4, NOTE_G4, NOTE_A4, 0,
-	
-	NOTE_E4, NOTE_G4, NOTE_A4, NOTE_A4, 0,
-	NOTE_A4, NOTE_C5, NOTE_D5, NOTE_D5, 0,
-	NOTE_D5, NOTE_E5, NOTE_F5, NOTE_F5, 0,
-	NOTE_E5, NOTE_D5, NOTE_E5, NOTE_A4, 0,
-	
-	NOTE_A4, NOTE_B4, NOTE_C5, NOTE_C5, 0,
-	NOTE_D5, NOTE_E5, NOTE_A4, 0,
-	NOTE_A4, NOTE_C5, NOTE_B4, NOTE_B4, 0,
-	NOTE_C5, NOTE_A4, NOTE_B4, 0,
-
-	NOTE_A4, NOTE_A4,
-	//Repeat of first part
-	NOTE_A4, NOTE_B4, NOTE_C5, NOTE_C5, 0,
-	NOTE_C5, NOTE_D5, NOTE_B4, NOTE_B4, 0,
-	NOTE_A4, NOTE_G4, NOTE_A4, 0,
-
-	NOTE_E4, NOTE_G4, NOTE_A4, NOTE_A4, 0,
-	NOTE_A4, NOTE_B4, NOTE_C5, NOTE_C5, 0,
-	NOTE_C5, NOTE_D5, NOTE_B4, NOTE_B4, 0,
-	NOTE_A4, NOTE_G4, NOTE_A4, 0,
-	
-	NOTE_E4, NOTE_G4, NOTE_A4, NOTE_A4, 0,
-	NOTE_A4, NOTE_C5, NOTE_D5, NOTE_D5, 0,
-	NOTE_D5, NOTE_E5, NOTE_F5, NOTE_F5, 0,
-	NOTE_E5, NOTE_D5, NOTE_E5, NOTE_A4, 0,
-	
-	NOTE_A4, NOTE_B4, NOTE_C5, NOTE_C5, 0,
-	NOTE_D5, NOTE_E5, NOTE_A4, 0,
-	NOTE_A4, NOTE_C5, NOTE_B4, NOTE_B4, 0,
-	NOTE_C5, NOTE_A4, NOTE_B4, 0,
-	//End of Repeat
-
-	NOTE_E5, 0, 0, NOTE_F5, 0, 0,
-	NOTE_E5, NOTE_E5, 0, NOTE_G5, 0, NOTE_E5, NOTE_D5, 0, 0,
-	NOTE_D5, 0, 0, NOTE_C5, 0, 0,
-	NOTE_B4, NOTE_C5, 0, NOTE_B4, 0, NOTE_A4,
-
-	NOTE_E5, 0, 0, NOTE_F5, 0, 0,
-	NOTE_E5, NOTE_E5, 0, NOTE_G5, 0, NOTE_E5, NOTE_D5, 0, 0,
-	NOTE_D5, 0, 0, NOTE_C5, 0, 0,
-	NOTE_B4, NOTE_C5, 0, NOTE_B4, 0, NOTE_A4
-};
-//*****************************************
-int duration[] = {         //duration of each note (in ms) Quarter Note is set to 250 ms
-	125, 125, 250, 125, 125,
-	125, 125, 250, 125, 125,
-	125, 125, 250, 125, 125,
-	125, 125, 375, 125,
-	
-	125, 125, 250, 125, 125,
-	125, 125, 250, 125, 125,
-	125, 125, 250, 125, 125,
-	125, 125, 375, 125,
-	
-	125, 125, 250, 125, 125,
-	125, 125, 250, 125, 125,
-	125, 125, 250, 125, 125,
-	125, 125, 125, 250, 125,
-
-	125, 125, 250, 125, 125,
-	250, 125, 250, 125,
-	125, 125, 250, 125, 125,
-	125, 125, 375, 375,
-
-	250, 125,
-	//Rpeat of First Part
-	125, 125, 250, 125, 125,
-	125, 125, 250, 125, 125,
-	125, 125, 375, 125,
-	
-	125, 125, 250, 125, 125,
-	125, 125, 250, 125, 125,
-	125, 125, 250, 125, 125,
-	125, 125, 375, 125,
-	
-	125, 125, 250, 125, 125,
-	125, 125, 250, 125, 125,
-	125, 125, 250, 125, 125,
-	125, 125, 125, 250, 125,
-
-	125, 125, 250, 125, 125,
-	250, 125, 250, 125,
-	125, 125, 250, 125, 125,
-	125, 125, 375, 375,
-	//End of Repeat
-	
-	250, 125, 375, 250, 125, 375,
-	125, 125, 125, 125, 125, 125, 125, 125, 375,
-	250, 125, 375, 250, 125, 375,
-	125, 125, 125, 125, 125, 500,
-
-	250, 125, 375, 250, 125, 375,
-	125, 125, 125, 125, 125, 125, 125, 125, 375,
-	250, 125, 375, 250, 125, 375,
-	125, 125, 125, 125, 125, 500
-};
 
 void tone(int freq, int dur){
 	int T = 1000000/(2*freq);
@@ -209,21 +90,46 @@ void tone(int freq, int dur){
 // CALLBACK
 void but_callback(void){
 	but_flag = 1;
-	delay_ms(100);
+	delay_ms(200);
 };
 void but1_callback(void){
 	but1_flag = 1;
-	delay_ms(100);
+	delay_ms(200);
 	};
 void but2_callback(void){
 	but2_flag = 1;
-	delay_ms(100);
+	delay_ms(200);
 };
 void but3_callback(void){
 	but3_flag = 1;
-	delay_ms(100);
+	delay_ms(200);
 };
 
+
+int *musica;
+int *duration;
+int size;
+void escolhemusica(int idx){
+	if(idx == 0){
+		musica = &pirate_notes;
+		duration = &pirate_tempo;
+		size = sizeof(pirate_notes);
+	}
+	else if(idx == 1){
+		musica = &underworld_melody;
+		duration = &underworld_tempo;
+		size = sizeof(underworld_melody);
+	}
+	else if(idx == 2){
+		musica = &imperial_march_notes;
+		duration = &imperial_march_tempo;
+		size = sizeof(imperial_march_notes);
+	} else {
+		musica = &pirate_notes;
+		duration = &pirate_tempo;
+		size = sizeof(pirate_notes);
+	}
+}
 
 // Função de inicialização do uC
 void init(void){
@@ -285,6 +191,7 @@ void init(void){
 int main(void) {
 	init();
 	int i = 0;
+	int music_idx = 0;
 	pio_set(LED1_PIO, LED1_PIO_IDX_MASK);
 	pio_set(LED2_PIO, LED2_PIO_IDX_MASK);
 	pio_set(LED3_PIO, LED3_PIO_IDX_MASK);
@@ -293,27 +200,40 @@ int main(void) {
 			pmc_sleep(SAM_PM_SMODE_SLEEP_WFI);	
 		}
 		
-		if(but1_flag) {
+		if(but2_flag) {
 			pause = !pause;
-			but1_flag = 0;	
+			but2_flag = 0;	
+		}
+		if(but1_flag){
+			music_idx--;
+			if (music_idx<=-1) music_idx = NMUS-1;
+			escolhemusica(music_idx);
+			i=0;
+			but1_flag = 0;
+		}
+		if(but3_flag){
+			music_idx++;
+			if (music_idx>=NMUS) music_idx = 0;
+			escolhemusica(music_idx);
+			i=0;
+			but3_flag = 0;
 		}
 		
 		
 		if(!pause){
+			if (i>(size-1)){
+				i = 0;
+			}
 		//for (int i=0;i < sizeof(notes);i++){
 			int adj = 2;
 			int wait = duration[i] * songspeed/adj;
 				
-			tone(notes[i],duration[i]/adj);
+			tone(musica[i],duration[i]/adj);
 			delay_ms(wait);
 			pio_clear(PIOB, BUZ_PIO_IDX_MASK);
 			delay_ms(wait);
 				
-			if(i <sizeof(notes)) i++;
-			else {
-				i = 0;
-				pause = 0;
-			}
+			i++;
 			
 		} 
 
