@@ -113,21 +113,21 @@ void escolhemusica(int idx){
 	if(idx == 0){
 		musica = &pirate_notes;
 		duration = &pirate_tempo;
-		size = sizeof(pirate_notes);
+		size = sizeof(pirate_notes)/sizeof(pirate_notes[0]);
 	}
 	else if(idx == 1){
 		musica = &underworld_melody;
 		duration = &underworld_tempo;
-		size = sizeof(underworld_melody);
+		size = sizeof(underworld_melody)/sizeof(underworld_melody[0]);
 	}
 	else if(idx == 2){
 		musica = &imperial_march_notes;
 		duration = &imperial_march_tempo;
-		size = sizeof(imperial_march_notes);
+		size = sizeof(imperial_march_notes)/sizeof(imperial_march_notes[0]);
 	} else {
 		musica = &pirate_notes;
 		duration = &pirate_tempo;
-		size = sizeof(pirate_notes);
+		size = sizeof(pirate_notes)/sizeof(pirate_notes[0]);
 	}
 }
 
