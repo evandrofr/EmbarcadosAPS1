@@ -54,16 +54,17 @@
 
 #define NMUS                3
 
+
+
 void init(void);
 void tone(int freq, int dur);
-void but1_callback(void);
+void but_callback(void);
 void but1_callback(void);
 void but2_callback(void);
 void but3_callback(void);
 /************************************************************************/
 /* interrupcoes                                                         */
 /************************************************************************/
-
 
 const int buzzer = 10; 
 const int songspeed = 1.5;
@@ -74,6 +75,15 @@ volatile char but2_flag = 0;
 volatile char but3_flag = 0; 
 char pause = 1;
 //*****************************************
+
+typedef struct{
+	int len;
+	int *notas;
+	int *time;
+	char *nome;
+} musica;
+
+//**************************************
 
 void tone(int freq, int dur){
 	int T = 1000000/(2*freq);
@@ -106,30 +116,6 @@ void but3_callback(void){
 };
 
 
-int *musica;
-int *duration;
-int size;
-void escolhemusica(int idx){
-	if(idx == 0){
-		musica = &pirate_notes;
-		duration = &pirate_tempo;
-		size = sizeof(pirate_notes)/sizeof(pirate_notes[0]);
-	}
-	else if(idx == 1){
-		musica = &underworld_melody;
-		duration = &underworld_tempo;
-		size = sizeof(underworld_melody)/sizeof(underworld_melody[0]);
-	}
-	else if(idx == 2){
-		musica = &imperial_march_notes;
-		duration = &imperial_march_tempo;
-		size = sizeof(imperial_march_notes)/sizeof(imperial_march_notes[0]);
-	} else {
-		musica = &pirate_notes;
-		duration = &pirate_tempo;
-		size = sizeof(pirate_notes)/sizeof(pirate_notes[0]);
-	}
-}
 
 // Função de inicialização do uC
 void init(void){
@@ -189,6 +175,28 @@ void init(void){
 }
 
 int main(void) {
+	musica pirate;
+	pirate.len = sizeof(pirate_notes)/sizeof(pirate_notes[0]);
+	pirate.notas = &pirate_notes;
+	pirate.nome = "Piratas";
+	pirate.time = &pirate_tempo;
+
+	musica imperial;
+	imperial.len = sizeof(imperial_march_notes)/sizeof(imperial_march_notes[0]);
+	imperial.notas = &imperial_march_notes;
+	imperial.nome = "Imperial";
+	imperial.time = &imperial_march_tempo;
+
+	musica underworld;
+	underworld.len = sizeof(underworld_melody)/sizeof(underworld_melody[0]);
+	underworld.notas = &underworld_melody;
+	underworld.nome = "Underworld";
+	underworld.time = &underworld_tempo;
+
+	musica lista_de_musicas[] = {pirate, imperial, underworld};
+
+
+
 	init();
 	int i = 0;
 	int music_idx = 0;
@@ -207,28 +215,25 @@ int main(void) {
 		if(but1_flag){
 			music_idx--;
 			if (music_idx<=-1) music_idx = NMUS-1;
-			escolhemusica(music_idx);
 			i=0;
 			but1_flag = 0;
 		}
 		if(but3_flag){
 			music_idx++;
 			if (music_idx>=NMUS) music_idx = 0;
-			escolhemusica(music_idx);
 			i=0;
 			but3_flag = 0;
 		}
 		
 		
 		if(!pause){
-			if (i>(size-1)){
+			if (i>(lista_de_musicas[music_idx].len[i]-1)){
 				i = 0;
 			}
-		//for (int i=0;i < sizeof(notes);i++){
 			int adj = 2;
-			int wait = duration[i] * songspeed/adj;
+			int wait = lista_de_musicas[music_idx].time[i] * songspeed/adj;
 				
-			tone(musica[i],duration[i]/adj);
+			tone(lista_de_musicas[music_idx].notas[i],lista_de_musicas[music_idx].time[i]/adj);
 			delay_ms(wait);
 			pio_clear(PIOB, BUZ_PIO_IDX_MASK);
 			delay_ms(wait);
