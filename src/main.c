@@ -227,7 +227,11 @@ int main(void) {
 		
 		
 		if(!pause){
+<<<<<<< HEAD
 			if (i>(lista_de_musicas[music_idx].len[i]-1)){
+=======
+			if (i>(lista_de_musicas[music_idx].len-1)){
+>>>>>>> 48e56a92093d732611c64a47c4bb2e0914969e9b
 				i = 0;
 			}
 			int adj = 2;
