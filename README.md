@@ -1,6 +1,6 @@
 # EmbarcadosAPS1
 Placas + Codigo = Musica
-
+link para o video: https://www.youtube.com/watch?v=mO--RNVXvkA
 Passos para configurar o projeto
 
 1 - Coloque a placa "OLED1 X PLANED pro" no suporte para periférico "EXT1".
